@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐰 Rabbit Focus</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink: #FFB3C6;
+  --pink-light: #FFE0EA;
+  --pink-deep: #FF85A1;
+  --peach: #FFCBA4;
+  --lavender: #D4BBFF;
+  --mint: #B5EAD7;
+  --sky: #C7E8FF;
+  --yellow: #FFF0A0;
+  --white: #FFFBFD;
+  --text: #4A3F5C;
+  --text-soft: #8B7FA0;
+  --shadow: rgba(180,140,180,0.18);
+  --card-bg: rgba(255,255,255,0.82);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(160deg, #FFE4EE 0%, #EDD9FF 40%, #C7E8FF 100%);
+  min-height: 100vh;
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* Floating decorative blobs */
+body::before, body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+body::before {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #FFB3C6, #D4BBFF);
+  top: -100px; left: -100px;
+  animation: floatBlob 8s ease-in-out infinite alternate;
+}
+body::after {
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, #B5EAD7, #C7E8FF);
+  bottom: -80px; right: -80px;
+  animation: floatBlob 10s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes floatBlob {
+  from { transform: translate(0,0) scale(1); }
+  to { transform: translate(30px, 20px) scale(1.08); }
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+  animation: slideDown 0.6s cubic-bezier(.34,1.56,.64,1);
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, #FF6B95, #A855F7, #3B82F6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -1px;
+}
+
+.header p {
+  color: var(--text-soft);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.header .stars {
+  font-size: 1.2rem;
+  margin-top: 6px;
+  animation: twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
+/* GRID LAYOUT */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.grid-full { grid-column: 1 / -1; }
+
+@media (max-width: 680px) {
+  .grid { grid-template-columns: 1fr; }
+  .grid-full { grid-column: 1; }
+}
+
+/* CARD */
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 24px;
+  padding: 22px 24px;
+  box-shadow: 0 8px 32px var(--shadow), 0 1px 0 rgba(255,255,255,0.8) inset;
+  border: 1.5px solid rgba(255,255,255,0.7);
+  animation: fadeUp 0.5s ease both;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 40px var(--shadow);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card:nth-child(2) { animation-delay: 0.08s; }
+.card:nth-child(3) { animation-delay: 0.16s; }
+.card:nth-child(4) { animation-delay: 0.24s; }
+.card:nth-child(5) { animation-delay: 0.32s; }
+.card:nth-child(6) { animation-delay: 0.40s; }
+
+.card-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title span.badge {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--pink), var(--lavender));
+  color: white;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* POMODORO CARD */
+.pomodoro-card {
+  grid-column: 1 / -1;
+  background: linear-gradient(145deg, rgba(255,230,238,0.9), rgba(230,210,255,0.9));
+}
+
+.rabbit-scene {
+  position: relative;
+  text-align: center;
+  margin: 8px 0 4px;
+}
+
+.rabbit-emoji {
+  font-size: 72px;
+  display: inline-block;
+  animation: rabbitBob 2s ease-in-out infinite;
+  filter: drop-shadow(0 6px 12px rgba(255,120,150,0.25));
+  cursor: default;
+  transition: font-size 0.3s;
+}
+
+@keyframes rabbitBob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+.rabbit-emoji.sleeping {
+  animation: sleepBob 3s ease-in-out infinite;
+}
+
+@keyframes sleepBob {
+  0%, 100% { transform: translateY(0) rotate(5deg); }
+  50% { transform: translateY(-4px) rotate(5deg); }
+}
+
+.rabbit-emoji.excited {
+  animation: excited 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes excited {
+  from { transform: translateY(0) scale(1); }
+  to { transform: translateY(-12px) scale(1.1); }
+}
+
+.carrot-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.carrot-count {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.progress-wrap {
+  flex: 1;
+  max-width: 260px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 20px;
+  height: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF85A1, #FF6B6B);
+  border-radius: 20px;
+  transition: width 1s linear;
+  width: 100%;
+}
+
+.timer-display {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.timer-text {
+  font-family: 'Baloo 2', cursive;
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, #FF6B95, #A855F7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.timer-mode {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 4px;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+/* BUTTONS */
+.btn {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  border: none;
+  border-radius: 14px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(.34,1.56,.64,1);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.3px;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.2);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.btn:hover::after { opacity: 1; }
+.btn:hover { transform: translateY(-2px) scale(1.03); }
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: linear-gradient(135deg, #FF85A1, #FF6B6B);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255,100,120,0.3);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #C7E8FF, #D4BBFF);
+  color: var(--text);
+  box-shadow: 0 4px 15px rgba(180,160,220,0.2);
+}
+
+.btn-mint {
+  background: linear-gradient(135deg, #B5EAD7, #A0D8C8);
+  color: var(--text);
+  box-shadow: 0 4px 15px rgba(100,200,160,0.2);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  border-radius: 10px;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  background: rgba(255,180,200,0.2);
+  color: var(--text);
+  border: 1.5px solid rgba(255,180,200,0.4);
+}
+
+.btn-icon:hover {
+  background: rgba(255,130,160,0.25);
+  border-color: rgba(255,130,160,0.6);
+}
+
+/* MODE SELECTOR */
+.mode-tabs {
+  display: flex;
+  gap: 6px;
+  background: rgba(255,255,255,0.4);
+  padding: 4px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  width: fit-content;
+  margin: 0 auto 14px;
+}
+
+.mode-tab {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 6px 14px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mode-tab.active {
+  background: white;
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* INPUTS */
+input[type="text"], input[type="password"], textarea, select {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  width: 100%;
+  padding: 10px 14px;
+  margin: 5px 0;
+  border-radius: 12px;
+  border: 1.5px solid rgba(200,180,220,0.4);
+  background: rgba(255,255,255,0.7);
+  color: var(--text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--pink-deep);
+  box-shadow: 0 0 0 3px rgba(255,133,161,0.15);
+  background: rgba(255,255,255,0.95);
+}
+
+textarea { resize: vertical; min-height: 90px; }
+
+select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238B7FA0' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+/* TODO */
+.todo-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.todo-input-row input { margin: 0; flex: 1; }
+
+.todo-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 12px;
+  border: 1.5px solid rgba(200,180,220,0.25);
+  transition: all 0.2s;
+  animation: taskIn 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+
+@keyframes taskIn {
+  from { opacity: 0; transform: translateX(-10px) scale(0.96); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+.todo-item:hover { background: rgba(255,255,255,0.85); }
+
+.todo-item.done { opacity: 0.55; }
+.todo-item.done .todo-text { text-decoration: line-through; }
+
+.todo-check {
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  border: 2px solid rgba(200,160,220,0.6);
+  background: white;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+
+.todo-check.checked {
+  background: linear-gradient(135deg, #B5EAD7, #80CFC0);
+  border-color: #80CFC0;
+  color: white;
+}
+
+.todo-text {
+  flex: 1;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.todo-del {
+  opacity: 0;
+  transition: opacity 0.2s;
+  background: rgba(255,120,120,0.15);
+  border: none;
+  border-radius: 8px;
+  width: 28px; height: 28px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  color: #FF6B6B;
+}
+
+.todo-item:hover .todo-del { opacity: 1; }
+
+/* STATS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.stat-box {
+  text-align: center;
+  padding: 14px 10px;
+  border-radius: 16px;
+  border: 1.5px solid rgba(255,255,255,0.7);
+}
+
+.stat-box:nth-child(1) { background: linear-gradient(135deg, #FFE0EA, #FFD0E0); }
+.stat-box:nth-child(2) { background: linear-gradient(135deg, #EDD9FF, #DFC8FF); }
+.stat-box:nth-child(3) { background: linear-gradient(135deg, #C7E8FF, #B0D8FF); }
+
+.stat-num {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 3px;
+}
+
+/* AI SECTION */
+.ai-result-wrap {
+  position: relative;
+  margin-top: 10px;
+}
+
+.ai-result {
+  background: rgba(255,255,255,0.6);
+  border: 1.5px solid rgba(200,180,220,0.3);
+  border-radius: 14px;
+  padding: 14px;
+  min-height: 80px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: pre-wrap;
+  line-height: 1.6;
+  display: none;
+}
+
+.ai-result.visible { display: block; animation: fadeUp 0.4s ease; }
+
+.spinner {
+  display: none;
+  text-align: center;
+  padding: 20px;
+  font-size: 1.5rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.spinner.visible { display: block; }
+
+.copy-btn-wrap {
+  position: absolute;
+  top: 8px; right: 8px;
+}
+
+/* GROQ SETUP */
+.key-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.key-row input { margin: 0; flex: 1; }
+
+.save-check-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-soft);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.save-check-label input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--pink-deep);
+}
+
+.info-note {
+  font-size: 0.75rem;
+  color: var(--text-soft);
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(200,180,220,0.15);
+  border-radius: 10px;
+  border-left: 3px solid var(--lavender);
+}
+
+/* NOTIFICATION TOAST */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: linear-gradient(135deg, #4A3F5C, #7B5C8D);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  z-index: 9999;
+  transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  pointer-events: none;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* DIVIDER */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(200,180,220,0.4), transparent);
+  margin: 12px 0;
+}
+
+/* Carrot rain effect */
+.carrot-pop {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  font-size: 1.8rem;
+  animation: carrotFly 1.2s ease-out forwards;
+}
+
+@keyframes carrotFly {
+  0% { opacity: 1; transform: translateY(0) scale(0.5) rotate(0deg); }
+  60% { opacity: 1; transform: translateY(-80px) scale(1.2) rotate(20deg); }
+  100% { opacity: 0; transform: translateY(-120px) scale(0.8) rotate(40deg); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(200,160,220,0.4); border-radius: 10px; }
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>🐰 Rabbit Focus</h1>
+    <p>Học tập • Tích lũy cà rốt • Nuôi thỏ yêu 🥕</p>
+    <div class="stars">✨ 🌸 ✨</div>
+  </div>
+
+  <div class="grid">
+
+    <!-- POMODORO CARD -->
+    <div class="card pomodoro-card grid-full">
+      <div class="card-title">⏱ Pomodoro Timer <span class="badge">Focus</span></div>
+
+      <div class="mode-tabs">
+        <button class="mode-tab active" onclick="setMode(25,'Học tập',this)">🍅 25 phút</button>
+        <button class="mode-tab" onclick="setMode(5,'Nghỉ ngắn',this)">☕ 5 phút</button>
+        <button class="mode-tab" onclick="setMode(15,'Nghỉ dài',this)">🌙 15 phút</button>
+      </div>
+
+      <div class="rabbit-scene">
+        <div class="rabbit-emoji" id="rabbitEmoji">🐰</div>
+      </div>
+
+      <div class="timer-display">
+        <div class="timer-text" id="timerDisplay">25:00</div>
+        <div class="timer-mode" id="timerMode">Sẵn sàng học nào!</div>
+      </div>
+
+      <div class="progress-wrap" style="max-width:340px;margin:10px auto;">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="carrot-bar">
+        <span style="font-size:1.5rem">🥕</span>
+        <div class="progress-wrap">
+          <div class="progress-fill" id="sessionProgress" style="background:linear-gradient(90deg,#FFB3C6,#FF85A1);width:0%"></div>
+        </div>
+        <span class="carrot-count">🥕 × <span id="coinsDisplay">0</span></span>
+      </div>
+
+      <div class="timer-controls">
+        <button class="btn btn-primary" onclick="startTimer()">▶ Bắt đầu</button>
+        <button class="btn btn-secondary" onclick="pauseTimer()">⏸ Tạm dừng</button>
+        <button class="btn btn-mint" onclick="resetTimer()">↺ Reset</button>
+      </div>
+    </div>
+
+    <!-- TODO CARD -->
+    <div class="card">
+      <div class="card-title">📋 Nhiệm vụ hôm nay <span class="badge" id="taskBadge">0</span></div>
+
+      <div class="todo-input-row">
+        <input type="text" id="taskInput" placeholder="Thêm nhiệm vụ mới..." onkeydown="if(event.key==='Enter')addTask()">
+        <button class="btn btn-primary btn-sm" onclick="addTask()">+ Thêm</button>
+      </div>
+
+      <ul class="todo-list" id="todoList"></ul>
+
+      <div class="divider" id="todoDivider" style="display:none"></div>
+      <button class="btn btn-sm" style="background:rgba(255,120,120,0.12);color:#FF6B6B;border:none;display:none" id="clearDoneBtn" onclick="clearDone()">🗑 Xóa đã xong</button>
+    </div>
+
+    <!-- STATS CARD -->
+    <div class="card">
+      <div class="card-title">📊 Thống kê</div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-num" id="statMinutes">0</div>
+          <div class="stat-label">Phút học</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="statSessions">0</div>
+          <div class="stat-label">Phiên xong</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="statCarrots">0</div>
+          <div class="stat-label">Cà rốt 🥕</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div style="font-size:0.8rem;color:var(--text-soft);font-weight:700;margin-bottom:8px">Hoạt động tuần này</div>
+      <div style="display:flex;gap:5px;align-items:flex-end;height:50px" id="weekChart">
+        <!-- generated by JS -->
+      </div>
+      <div style="display:flex;gap:5px;margin-top:4px" id="weekDays">
+        <!-- days labels -->
+      </div>
+    </div>
+
+    <!-- GROQ CONFIG -->
+    <div class="card">
+      <div class="card-title">🤖 Cấu hình AI <span class="badge">Groq</span></div>
+
+      <div class="key-row">
+        <input type="password" id="apiKey" placeholder="Dán GROQ API Key vào đây...">
+        <button class="btn btn-sm btn-secondary" onclick="toggleKeyVis()">👁</button>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center;margin:6px 0">
+        <label class="save-check-label">
+          <input type="checkbox" id="saveKey" onchange="handleSaveKey()"> Lưu key
+        </label>
+        <select id="model" style="margin:0;flex:1">
+          <option value="llama3-8b-8192">llama3-8b (nhanh)</option>
+          <option value="llama3-70b-8192">llama3-70b (mạnh)</option>
+          <option value="mixtral-8x7b-32768">mixtral-8x7b</option>
+          <option value="gemma2-9b-it">gemma2-9b</option>
+        </select>
+      </div>
+
+      <button class="btn btn-mint btn-sm" onclick="testGroq()" style="width:100%;margin-top:4px">🔗 Kiểm tra kết nối</button>
+
+      <div class="info-note">⚠️ Không chia sẻ API key. Key chỉ dùng từ trình duyệt của bạn, không gửi đi đâu khác.</div>
+    </div>
+
+    <!-- AI ASSISTANT -->
+    <div class="card grid-full">
+      <div class="card-title">✨ Trợ lý AI học tập <span class="badge">Smart</span></div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <select id="taskAI" style="flex:1;min-width:160px;margin:0">
+          <option value="plan">📅 Tạo kế hoạch học</option>
+          <option value="summary">📝 Tóm tắt bài học</option>
+          <option value="tips">💡 Gợi ý cách học</option>
+          <option value="quiz">❓ Tạo câu hỏi ôn tập</option>
+          <option value="explain">🔍 Giải thích khái niệm</option>
+        </select>
+        <button class="btn btn-primary" onclick="runAI()">🚀 Chạy AI</button>
+        <button class="btn btn-secondary btn-sm" onclick="clearAI()">✕ Xóa</button>
+      </div>
+
+      <textarea id="aiInput" placeholder="Nhập chủ đề hoặc nội dung bài học bạn muốn AI hỗ trợ..." style="margin-top:10px"></textarea>
+
+      <div class="spinner" id="aiLoading">⏳</div>
+
+      <div class="ai-result-wrap">
+        <pre class="ai-result" id="aiResult"></pre>
+        <div class="copy-btn-wrap">
+          <button class="btn btn-icon btn-sm" id="copyBtn" onclick="copyAI()" style="display:none" title="Copy">📋</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+</div><!-- /app -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let time = 1500;
+let totalTime = 1500;
+let timerInterval = null;
+let isRunning = false;
+let coins = 0;
+let sessionsDone = 0;
+let totalMinutes = 0;
+let currentMode = 'focus';
+let weekData = [0,0,0,0,0,0,0];
+
+// Load from localStorage
+function loadState() {
+  const saved = localStorage.getItem('rabbitFocusState');
+  if (saved) {
+    const s = JSON.parse(saved);
+    const today = new Date().toDateString();
+    if (s.date === today) {
+      coins = s.coins || 0;
+      sessionsDone = s.sessions || 0;
+      totalMinutes = s.minutes || 0;
+      weekData = s.weekData || [0,0,0,0,0,0,0];
+    } else {
+      // new day - shift weekData
+      weekData = s.weekData || [0,0,0,0,0,0,0];
+      weekData.shift();
+      weekData.push(0);
+    }
+  }
+  // Load API key if saved
+  const key = localStorage.getItem('groqKey');
+  if (key) {
+    document.getElementById('apiKey').value = key;
+    document.getElementById('saveKey').checked = true;
+  }
+  // Load todos
+  const todos = localStorage.getItem('rabbitTodos');
+  if (todos) {
+    JSON.parse(todos).forEach(t => addTaskFromData(t.text, t.done));
+  }
+  updateUI();
+}
+
+function saveState() {
+  const today = new Date().toDateString();
+  localStorage.setItem('rabbitFocusState', JSON.stringify({
+    date: today, coins, sessions: sessionsDone, minutes: totalMinutes, weekData
+  }));
+}
+
+// ─── TIMER ────────────────────────────────────────────────────────────────────
+function setMode(minutes, label, btn) {
+  resetTimer();
+  time = minutes * 60;
+  totalTime = time;
+  document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateTimerDisplay();
+  document.getElementById('timerMode').textContent = label;
+  currentMode = minutes === 25 ? 'focus' : 'break';
+  const rabbit = document.getElementById('rabbitEmoji');
+  rabbit.className = 'rabbit-emoji';
+  rabbit.textContent = minutes === 5 ? '😴' : minutes === 15 ? '🌙' : '🐰';
+}
+
+function startTimer() {
+  if (isRunning) return;
+  isRunning = true;
+  const rabbit = document.getElementById('rabbitEmoji');
+  rabbit.className = 'rabbit-emoji excited';
+  rabbit.textContent = '🐰';
+  document.getElementById('timerMode').textContent = currentMode === 'focus' ? '🔥 Đang học...' : '☕ Đang nghỉ...';
+
+  timerInterval = setInterval(() => {
+    time--;
+    updateTimerDisplay();
+    updateProgress();
+
+    // Award carrot every minute of focus
+    if (currentMode === 'focus' && time > 0 && (totalTime - time) % 60 === 0 && time !== totalTime) {
+      coins++;
+      totalMinutes++;
+      document.getElementById('coinsDisplay').textContent = coins;
+      document.getElementById('statCarrots').textContent = coins;
+      document.getElementById('statMinutes').textContent = totalMinutes;
+      popCarrot();
+      saveState();
+    }
+
+    if (time <= 0) {
+      clearInterval(timerInterval);
+      isRunning = false;
+      onTimerEnd();
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  if (!isRunning) return;
+  clearInterval(timerInterval);
+  isRunning = false;
+  document.getElementById('timerMode').textContent = '⏸ Tạm dừng';
+  document.getElementById('rabbitEmoji').className = 'rabbit-emoji';
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  isRunning = false;
+  time = totalTime;
+  updateTimerDisplay();
+  updateProgress();
+  document.getElementById('timerMode').textContent = 'Sẵn sàng học nào!';
+  document.getElementById('rabbitEmoji').className = 'rabbit-emoji';
+  document.getElementById('sessionProgress').style.width = '0%';
+}
+
+function onTimerEnd() {
+  if (currentMode === 'focus') {
+    sessionsDone++;
+    totalMinutes += Math.round(totalTime / 60);
+    const todayIdx = new Date().getDay();
+    weekData[todayIdx] = (weekData[todayIdx] || 0) + Math.round(totalTime / 60);
+    saveState();
+    updateUI();
+    toast('🎉 Hoàn thành phiên học! +🥕 Cà rốt!');
+    document.getElementById('rabbitEmoji').textContent = '🎊';
+    document.getElementById('rabbitEmoji').className = 'rabbit-emoji';
+  } else {
+    toast('😊 Nghỉ xong rồi, học tiếp thôi!');
+    document.getElementById('rabbitEmoji').textContent = '🐰';
+    document.getElementById('rabbitEmoji').className = 'rabbit-emoji';
+  }
+  time = totalTime;
+  updateTimerDisplay();
+  updateProgress();
+  document.getElementById('timerMode').textContent = currentMode === 'focus' ? '✅ Xong rồi!' : '😊 Nghỉ xong!';
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(time / 60);
+  const s = time % 60;
+  document.getElementById('timerDisplay').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+}
+
+function updateProgress() {
+  const pct = ((totalTime - time) / totalTime * 100);
+  document.getElementById('progressFill').style.width = (100 - pct) + '%';
+  document.getElementById('sessionProgress').style.width = pct + '%';
+}
+
+// ─── TODOS ────────────────────────────────────────────────────────────────────
+function addTask() {
+  const val = document.getElementById('taskInput').value.trim();
+  if (!val) { toast('✏️ Nhập nhiệm vụ trước nhé!'); return; }
+  addTaskFromData(val, false);
+  document.getElementById('taskInput').value = '';
+  saveTodos();
+}
+
+function addTaskFromData(text, done) {
+  const ul = document.getElementById('todoList');
+  const li = document.createElement('li');
+  li.className = 'todo-item' + (done ? ' done' : '');
+  li.innerHTML = `
+    <div class="todo-check ${done ? 'checked' : ''}" onclick="toggleTask(this)">
+      ${done ? '✓' : ''}
+    </div>
+    <span class="todo-text">${text}</span>
+    <button class="todo-del" onclick="deleteTask(this)">✕</button>
+  `;
+  ul.appendChild(li);
+  updateTaskBadge();
+  checkClearBtn();
+}
+
+function toggleTask(check) {
+  const li = check.closest('.todo-item');
+  li.classList.toggle('done');
+  const isDone = li.classList.contains('done');
+  check.classList.toggle('checked', isDone);
+  check.textContent = isDone ? '✓' : '';
+  saveTodos();
+  checkClearBtn();
+  if (isDone) toast('✅ Nhiệm vụ hoàn thành!');
+}
+
+function deleteTask(btn) {
+  btn.closest('.todo-item').remove();
+  updateTaskBadge();
+  checkClearBtn();
+  saveTodos();
+}
+
+function clearDone() {
+  document.querySelectorAll('.todo-item.done').forEach(el => el.remove());
+  checkClearBtn();
+  saveTodos();
+}
+
+function checkClearBtn() {
+  const hasDone = document.querySelector('.todo-item.done');
+  document.getElementById('clearDoneBtn').style.display = hasDone ? 'block' : 'none';
+  document.getElementById('todoDivider').style.display = hasDone ? 'block' : 'none';
+}
+
+function updateTaskBadge() {
+  const count = document.querySelectorAll('.todo-item').length;
+  document.getElementById('taskBadge').textContent = count;
+}
+
+function saveTodos() {
+  const items = [];
+  document.querySelectorAll('.todo-item').forEach(li => {
+    items.push({
+      text: li.querySelector('.todo-text').textContent,
+      done: li.classList.contains('done')
+    });
+  });
+  localStorage.setItem('rabbitTodos', JSON.stringify(items));
+}
+
+// ─── WEEK CHART ───────────────────────────────────────────────────────────────
+function renderWeekChart() {
+  const chart = document.getElementById('weekChart');
+  const daysEl = document.getElementById('weekDays');
+  const days = ['CN','T2','T3','T4','T5','T6','T7'];
+  const max = Math.max(...weekData, 1);
+  chart.innerHTML = '';
+  daysEl.innerHTML = '';
+  weekData.forEach((val, i) => {
+    const pct = Math.round((val / max) * 100);
+    const bar = document.createElement('div');
+    bar.style.cssText = `flex:1;border-radius:6px 6px 0 0;background:linear-gradient(135deg,#FFB3C6,#D4BBFF);height:${Math.max(pct, 4)}%;opacity:0.8;transition:height 0.5s ease;`;
+    bar.title = `${val} phút`;
+    chart.appendChild(bar);
+
+    const d = document.createElement('div');
+    d.style.cssText = 'flex:1;text-align:center;font-size:0.65rem;font-weight:700;color:var(--text-soft)';
+    d.textContent = days[i];
+    daysEl.appendChild(d);
+  });
+}
+
+// ─── AI ───────────────────────────────────────────────────────────────────────
+async function callGroq(messages) {
+  const key = document.getElementById('apiKey').value.trim();
+  if (!key) { toast('🔑 Nhập API key trước!'); throw new Error('No key'); }
+  const model = document.getElementById('model').value;
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model, messages, temperature: 0.5 })
+  });
+  if (!res.ok) throw new Error('API error ' + res.status);
+  const data = await res.json();
+  return data.choices[0].message.content;
+}
+
+const systemPrompts = {
+  plan: 'Bạn là trợ lý học tập thông minh. Tạo kế hoạch học tập chi tiết, chia nhỏ theo ngày/tuần, phù hợp với phương pháp Pomodoro. Trả lời bằng tiếng Việt.',
+  summary: 'Bạn là trợ lý học tập. Tóm tắt bài học ngắn gọn, rõ ràng, dễ nhớ. Dùng bullet points. Trả lời bằng tiếng Việt.',
+  tips: 'Bạn là chuyên gia phương pháp học tập. Đưa ra gợi ý học hiệu quả, khoa học và thực tế. Trả lời bằng tiếng Việt.',
+  quiz: 'Bạn là giáo viên. Tạo 5 câu hỏi trắc nghiệm hoặc tự luận để ôn tập chủ đề được cho. Trả lời bằng tiếng Việt.',
+  explain: 'Bạn là gia sư thông minh. Giải thích khái niệm dễ hiểu, dùng ví dụ minh họa thực tế. Trả lời bằng tiếng Việt.'
+};
+
+async function runAI() {
+  const input = document.getElementById('aiInput').value.trim();
+  if (!input) { toast('✏️ Nhập nội dung trước nhé!'); return; }
+
+  const task = document.getElementById('taskAI').value;
+  const loading = document.getElementById('aiLoading');
+  const result = document.getElementById('aiResult');
+
+  loading.className = 'spinner visible';
+  result.className = 'ai-result';
+  document.getElementById('copyBtn').style.display = 'none';
+
+  try {
+    const output = await callGroq([
+      { role: 'system', content: systemPrompts[task] || 'Bạn là trợ lý học tập. Trả lời tiếng Việt.' },
+      { role: 'user', content: input }
+    ]);
+    result.textContent = output;
+    result.className = 'ai-result visible';
+    document.getElementById('copyBtn').style.display = 'flex';
+    toast('✨ AI đã trả lời!');
+  } catch (e) {
+    result.textContent = '❌ Lỗi: ' + e.message + '\n\nHãy kiểm tra API key và kết nối mạng.';
+    result.className = 'ai-result visible';
+    toast('❌ Lỗi kết nối AI');
+  }
+
+  loading.className = 'spinner';
+}
+
+function clearAI() {
+  document.getElementById('aiInput').value = '';
+  document.getElementById('aiResult').className = 'ai-result';
+  document.getElementById('copyBtn').style.display = 'none';
+}
+
+async function testGroq() {
+  document.getElementById('aiInput').value = 'Xin chào! Hãy giới thiệu ngắn về bản thân bạn trong 1-2 câu.';
+  await runAI();
+}
+
+function copyAI() {
+  navigator.clipboard.writeText(document.getElementById('aiResult').textContent).then(() => {
+    toast('📋 Đã copy!');
+  });
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function toggleKeyVis() {
+  const input = document.getElementById('apiKey');
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+function handleSaveKey() {
+  const checked = document.getElementById('saveKey').checked;
+  const key = document.getElementById('apiKey').value;
+  if (checked) localStorage.setItem('groqKey', key);
+  else localStorage.removeItem('groqKey');
+}
+
+document.getElementById('apiKey').addEventListener('input', () => {
+  if (document.getElementById('saveKey').checked)
+    localStorage.setItem('groqKey', document.getElementById('apiKey').value);
+});
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+function popCarrot() {
+  const el = document.createElement('div');
+  el.className = 'carrot-pop';
+  el.textContent = '🥕';
+  el.style.left = (40 + Math.random() * 200) + 'px';
+  el.style.top = '60%';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1200);
+}
+
+function updateUI() {
+  document.getElementById('coinsDisplay').textContent = coins;
+  document.getElementById('statCarrots').textContent = coins;
+  document.getElementById('statMinutes').textContent = totalMinutes;
+  document.getElementById('statSessions').textContent = sessionsDone;
+  renderWeekChart();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+loadState();
+</script>
+
+</body>
+</html>
